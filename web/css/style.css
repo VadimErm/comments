@@ -1,0 +1,28 @@
+body{
+    padding: 40px;
+}
+ul{
+    padding: 0;
+    margin: 0;
+}
+.comment-form-block {
+    width: 400px;
+
+}
+
+label, textarea {
+    display: block;
+}
+
+.comment-input {
+    display: none;
+}
+
+.center-block{
+    width: 500px;
+    margin-top: 100px;
+}
+.comment {
+    display: block;
+    width: 400px;
+}
