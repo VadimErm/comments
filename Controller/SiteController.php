@@ -9,14 +9,15 @@ class SiteController extends BaseController
     public function loginAction()
     {
 
-
         if(isset($_POST['login']) && isset($_POST['password'])){
             $login = trim($_POST['login']);
             $password = trim($_POST['password']);
             $model = new User();
             $user  = $model->findBy(['login' => $login]);
-
-            if($user && $user->login($password)){
+            if(isset($_POST['remember_me']) && $_POST['remember_me'] == 'on') {
+                $remember_me = true;
+            }
+            if($user && $user[0]->login($password, $remember_me)){
                 $this->redirect('index.php?c=comment&a=index');
             } else {
                 $this->_view->render('login');
@@ -32,7 +33,7 @@ class SiteController extends BaseController
     {
         $user = $this->_security->auth();
 
-        if($user->logout()){
+        if($user[0]->logout()){
             $this->redirect('index.php?c=site&a=login');
         } else {
             $this->_view->render('error', ['error' => "Something wrong!"]);

@@ -5,20 +5,48 @@ namespace App\Controller;
 
 
 use App\Models\Comment;
+use App\Models\Like;
 
 class CommentController extends BaseController
 {
 
 
-
     public function indexAction()
     {
+
         if($user = $this->_security->auth()){
+            $page = 0;
+            if(isset($_POST['page'])){
+                $page = (int) $_POST['page'];
+            }
+
             $model = new Comment();
+            $rawCount = $model->getRawCount();
+            $limit = COMMENTS_LIMIT;
+            $pageCount = (int)ceil($rawCount  / $limit);
+            if($page == 0){
+                $comments = $model->getAll(0, $limit);
+                $this->_view->render('home', [
+                    'comments' => $comments,
+                    'user' => $user[0],
+                    'page' => $page+1,
+                    'pageCount'=> $pageCount
+                ]);
+            } else{
+                $offset = $limit*$page;
+                $comments = $model->getAll($offset, $limit);
+                echo json_encode([
+                    'status' => 'success',
+                    'comments' => $comments,
+                    'user' => $user,
+                    'page' => $page+1,
+                    'pageCount'=> $pageCount]);
+            }
 
-            $comments = $model->getAll();
 
-            $this->_view->render('home', ['comments' => $comments, 'user' => $user]);
+
+
+
 
         } else {
             $this->_view->render('login');
@@ -30,24 +58,21 @@ class CommentController extends BaseController
 
     public function createAction()
     {
-        $access_token = null;
-        if(isset($_POST['access_token'])){
-            $access_token = $_POST['access_token'];
-        }
-        if($user = $this->_security->auth($access_token)){
+
+        if($user = $this->_security->auth()){
             if (isset($_POST['text']) && !empty($_POST['text'])) {
 
                 $model = new Comment();
 
-                $data['user_id'] = $user->id;
+                $data['user_id'] = $user[0]->id;
                 $data['text'] = trim($_POST['text']);
                 $data['created_at'] = time();
 
                 if ($comment_id =$model->add($data)) {
 
 
-                        $data['user_name'] = $user->name;
-                        $data['created_at'] = date('d.m.Y-H:m:s',$data['created_at']);
+                        $data['user'] = $user[0]->name;
+                        //$data['created_at'] = date('d.m.Y-H:m:s',$data['created_at']);
                         $data['id'] = $comment_id;
                         echo json_encode([
                             'status' => 'success',
@@ -84,11 +109,8 @@ class CommentController extends BaseController
 
     public function updateAction()
     {
-        $access_token = null;
-        if(isset($_POST['access_token'])){
-            $access_token = $_POST['access_token'];
-        }
-        if($user = $this->_security->auth($access_token)){
+
+        if($user = $this->_security->auth()){
             if (!empty($_POST['text']) && !empty($_POST['id'])) {
                 $commentId = (int)$_POST['id'];
 
@@ -119,11 +141,8 @@ class CommentController extends BaseController
 
     public function deleteAction()
     {
-        $access_token = null;
-        if(isset($_POST['access_token'])){
-            $access_token = $_POST['access_token'];
-        }
-        if($user = $this->_security->auth($access_token)) {
+
+        if($user = $this->_security->auth()) {
             if (isset($_POST['id']) && isset($_POST['access_token'])) {
                 $model = new Comment();
                 $comment = $model->findById($_POST['id']);
@@ -145,6 +164,47 @@ class CommentController extends BaseController
 
             ]);
         }
+    }
+
+    public function likeAction()
+    {
+        if($user = $this->_security->auth()){
+            if(isset($_POST['comment_id'])){
+                $model = new Comment();
+                $comment = $model->findById($_POST['comment_id']);
+                if($user[0]->id !==$comment->user_id){
+                    $like = new Like($_POST['comment_id'], $user[0]->id);
+                    if($like->isLiked()){
+                        if($like->dislike()){
+                            echo json_encode(['status'=>'success', 'dislike' => true]);
+                        } else {
+                            echo json_encode(['status'=>'fail']);
+                        }
+
+                    } else {
+                        if($like->like()){
+                            echo json_encode(['status'=>'success', 'dislike' => false]);
+                        }else {
+                            echo json_encode(['status'=>'fail']);
+                        }
+
+                    }
+                } else {
+                    echo json_encode(['status'=>'fail']);
+                }
+
+
+            } else {
+                echo json_encode(['status'=>'fail']);
+            }
+
+        } else {
+            echo json_encode([
+                'status' =>'login',
+
+            ]);
+        }
+
     }
 
 

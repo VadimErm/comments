@@ -5,8 +5,7 @@ namespace App;
 use App\Engine\ClassLoader;
 use App\Engine\Router;
 
-define('ROOT_URL', 'http://' . $_SERVER['HTTP_HOST'] . str_replace('\\', '', dirname(htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES))));
-define('ROOT_PATH', __DIR__ . '/');
+include 'config.php';
 
 
 try

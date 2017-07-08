@@ -14,53 +14,71 @@ class User extends Model
     public $password;
     public $access_token;
 
-    public function login($password)
+    public function login($password, $remember_me = false)
     {
-        if (isset($_COOKIE['errors'])){
 
-            setcookie('errors', '', time() - 60*24*30*12, '/');
-        }
 
-            if($this->password === md5(md5($password)))
-            {
+
+            if (isset($_COOKIE['errors'])) {
+
+                setcookie('errors', '', time() - 60 * 24 * 30 * 12, '/');
+            }
+
+
+            if ($this->password === md5(md5($password))) {
 
                 $this->access_token = $this->genereteAccessToken(10);
 
-                if(!$this->updateAccessToken()){
+                if (!$this->updateAccessToken()) {
 
                     throw new Exception("Failed to update access_token");
 
                 }
+                if($remember_me){
 
-                setcookie("user_id", $this->id, time()+60*60*24*30);
-                setcookie("access_token", $this->access_token, time()+60*60*24*30);
+                    setcookie("access_token", $this->access_token, time() + 60 * 60 * 24 * 30);
+                } else{
+                    if(isset($_COOKIE['access_token'])){
+                        setcookie("access_token", '', time() - 60 * 24 * 30 * 12);
+                    }
+                    session_start();
+
+                    $_SESSION['access_token'] = $this->access_token;
+                }
+
 
                 return true;
-            }
-            else
-            {
-                setcookie("user_id", '', time() - 60*24*30*12);
-                setcookie("access_token", '', time() - 60*24*30*12);
-                setcookie('errors', '1', time() + 60*24*30*12, '/');
+            } else {
+
+                setcookie("access_token", '', time() - 60 * 24 * 30 * 12);
+                setcookie('errors', '1', time() + 60 * 24 * 30 * 12, '/');
 
                 return false;
 
             }
 
 
+
     }
 
     public function logout()
     {
+
         $this->access_token = '';
         if(!$this->updateAccessToken()){
 
             throw new Exception("Failed to update access_token");
 
         }
+        session_start();
+        if(isset($_SESSION['access_token'])){
+            unset($_SESSION['access_token']);
+            session_destroy();
+        }
 
         setcookie("user_id", '', time() - 60*24*30*12);
         setcookie("access_token", '', time() - 60*24*30*12);
+        session_destroy();
 
         return true;
     }

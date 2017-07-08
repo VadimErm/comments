@@ -26,3 +26,6 @@ label, textarea {
     display: block;
     width: 400px;
 }
+.panel-default>.panel-heading .badge {
+    background-color: #28a4c9;
+}

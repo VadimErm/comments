@@ -87,7 +87,7 @@ abstract class Model
             $query = $this->_db->prepare("SELECT * FROM ". $label. " WHERE ".$param." = :".$param);
             $query->bindParam(':'.$param, $value, \PDO::PARAM_INT);
             $query->execute();
-            $raw = $query->fetch(\PDO::FETCH_OBJ);
+            $raw = $query->fetchAll(\PDO::FETCH_OBJ);
             if(!$raw){
                 return null;
             }
@@ -110,6 +110,14 @@ abstract class Model
         return $query->execute();
 
 
+    }
+
+    public function getRawCount()
+    {
+        $label = $this->label();
+        $query = $this->_db->prepare("SELECT * FROM ". $label);
+        $query->execute();
+        return $query->rowCount();
     }
 
     abstract protected  function label();

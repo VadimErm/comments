@@ -15,15 +15,22 @@ class Comment extends Model
     public $created_at;
     public $updated_at;
     public $user;
+    public $likes;
 
 
 
-    public function getAll()
+    public function getAll($offset = 0, $limit = 5)
     {
-        $query = $this->_db->query('SELECT * FROM comments ORDER BY created_at ASC');
+
+        $query = $this->_db->query('SELECT * FROM comments  ORDER BY created_at ASC LIMIT '.$limit.' OFFSET '.$offset);
         $raws = $query->fetchAll(\PDO::FETCH_OBJ);
 
         $models = $this->load($raws);
+
+        foreach ($models as $model){
+            $model->user = $model->getUser()->name;
+            $model->likes = $model->getLikes();
+        }
 
         return $models;
 
@@ -62,6 +69,16 @@ class Comment extends Model
         $model = new User();
 
         return $model->findById($this->user_id);
+    }
+
+    public function getLikes()
+    {
+        $model = new Like();
+
+        $likes = $model->findBy(['comment_id' => $this->id]);
+
+        return count($likes);
+
     }
 
 
