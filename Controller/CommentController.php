@@ -10,7 +10,9 @@ use App\Models\Like;
 class CommentController extends BaseController
 {
 
-
+    /**
+     * Get comments
+     */
     public function indexAction()
     {
 
@@ -43,11 +45,6 @@ class CommentController extends BaseController
                     'pageCount'=> $pageCount]);
             }
 
-
-
-
-
-
         } else {
             $this->_view->render('login');
         }
@@ -56,6 +53,9 @@ class CommentController extends BaseController
 
     }
 
+    /**
+     * Add comment
+     */
     public function createAction()
     {
 
@@ -70,16 +70,12 @@ class CommentController extends BaseController
 
                 if ($comment_id =$model->add($data)) {
 
-
                         $data['user'] = $user[0]->name;
-                        //$data['created_at'] = date('d.m.Y-H:m:s',$data['created_at']);
                         $data['id'] = $comment_id;
                         echo json_encode([
                             'status' => 'success',
                             'data' => $data
                         ]);
-
-
 
                 } else {
                     echo json_encode([
@@ -107,6 +103,9 @@ class CommentController extends BaseController
 
     }
 
+    /**
+     * Update comment
+     */
     public function updateAction()
     {
 
@@ -139,6 +138,9 @@ class CommentController extends BaseController
 
     }
 
+    /**
+     * Delete comment
+     */
     public function deleteAction()
     {
 
@@ -166,6 +168,9 @@ class CommentController extends BaseController
         }
     }
 
+    /**
+     * Add like to comment. Like can add only not an author of comment.
+     */
     public function likeAction()
     {
         if($user = $this->_security->auth()){

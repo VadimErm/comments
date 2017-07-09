@@ -6,6 +6,10 @@ use App\Models\User;
 
 class SiteController extends BaseController
 {
+
+    /**
+     * Authenticate user. If user click remember me, access token saved in cookies else it saved in session
+     */
     public function loginAction()
     {
 
@@ -29,6 +33,9 @@ class SiteController extends BaseController
 
     }
 
+    /**
+     * Logout user
+     */
     public function logoutAction()
     {
         $user = $this->_security->auth();
@@ -41,6 +48,9 @@ class SiteController extends BaseController
 
     }
 
+    /**
+     * If action doesn't exist, router call this method;
+     */
     public function notFoundAction()
     {
         http_response_code(404);

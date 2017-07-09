@@ -21,6 +21,10 @@ class BaseController
 
     }
 
+    /**
+     * Redirect to another url
+     * @param $url
+     */
     public function redirect($url)
     {
         header("Location:".ROOT_URL."$url");

@@ -3,7 +3,7 @@ function showEditForm(id) {
   $("#comment-input-"+id).slideToggle('slow');
 }
 
-function insertComment(comment, user_id) {
+function insertComment(comment, user_id, position) {
     var time;
     var likes;
     if(comment.updated_at == null){
@@ -46,7 +46,12 @@ function insertComment(comment, user_id) {
                   "</form>"+
                 "</div>"+
               "</li>";
-    $(".comments").append(html);
+    if(position == 'prepend'){
+      $(".comments").prepend(html);
+    } else if(position == 'append'){
+      $(".comments").append(html);
+    }
+
   
 }
 
@@ -70,7 +75,7 @@ function createComment() {
 
       if(response.status == 'success'){
         $("#error").hide();
-        insertComment(response.data, null);
+        insertComment(response.data, null, 'prepend');
         $('#comment-form textarea').val('');
       } else if(response.status =='fail'){
         $("#error").html(response.error);
@@ -183,7 +188,7 @@ function loadComments(page, pageCount, user_id) {
       if(response.status == 'success'){
         if(response.page <= pageCount){
             response.comments.forEach(function (comment, i, arr) {
-              insertComment(comment, user_id);
+              insertComment(comment, user_id, 'append');
             });
 
             $("#load-comments")[0].onclick = null;
@@ -253,8 +258,6 @@ $(document).ready(function () {
     e.preventDefault();
     createComment();
   });
-
-
 
 });
 

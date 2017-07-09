@@ -13,6 +13,11 @@ class View
 {
     CONST LAYOUT = ROOT_PATH.'Views/main.php';
 
+    /**
+     * Render response
+     * @param $fileView
+     * @param array $params
+     */
     public function render($fileView, $params = [])
     {
 

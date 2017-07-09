@@ -18,11 +18,19 @@ class Like extends Model
 
     }
 
+    /**
+     * @inheritdoc
+     * @return string
+     */
     public function label()
     {
         return 'likes';
     }
 
+    /**
+     * Add like
+     * @return bool
+     */
     public function like()
     {
         $query = $this->_db->prepare("INSERT INTO `likes`(`user_id`, `comment_id`) VALUES (:user_id, :comment_id)");
@@ -37,6 +45,10 @@ class Like extends Model
 
     }
 
+    /**
+     * Delete like
+     * @return bool
+     */
     public function dislike()
     {
         $query = $this->_db->prepare("DELETE FROM `likes` WHERE user_id= :user_id AND comment_id = :comment_id");
@@ -49,6 +61,10 @@ class Like extends Model
         }
     }
 
+    /**
+     * Check if user add like to comment
+     * @return mixed
+     */
     public function isLiked()
     {
         $query = $this->_db->prepare("SELECT * FROM `likes` WHERE user_id = :user_id AND comment_id = :comment_id");

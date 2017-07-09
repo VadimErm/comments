@@ -1,4 +1,19 @@
 <h4>Здравствуйте, <?= $user->name; ?>.</h4>
+<div class="comment-form-block">
+    <div class="alert alert-danger" id='error' style="display: none;" role="alert"></div>
+    <form method="post" id="comment-form" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>Комментарий
+                <textarea class="form-control" rows="3" name="text"></textarea>
+            </label>
+        </div>
+
+
+        <input class="btn btn-default" type="submit" id="create-comment">
+        <a class="btn btn-default" href="/index.php?c=site&a=logout">Выйти</a>
+    </form>
+</div>
+<input type="hidden" id="access_token" value="<?= $user->access_token ?>">
 <ul class="comments">
     <?php foreach ($comments as $comment): ?>
     <li class="comment" id="<?= $comment->id?>">
@@ -38,20 +53,6 @@
 <?php if($page < $pageCount): ?>
     <button type="button" class="btn btn-primary" id="load-comments" onclick="loadComments(<?= $page ?>, <?= $pageCount ?>, <?= $user->id ?>)">Загрузить еще</button>
 <?php endif; ?>
-<div class="comment-form-block">
-    <div class="alert alert-danger" id='error' style="display: none;" role="alert"></div>
-    <form method="post" id="comment-form" enctype="multipart/form-data">
-        <div class="form-group">
-            <label>Комментарий
-                <textarea class="form-control" rows="3" name="text"></textarea>
-            </label>
-        </div>
 
-
-        <input class="btn btn-default" type="submit" id="create-comment">
-        <a class="btn btn-default" href="/index.php?c=site&a=logout">Выйти</a>
-    </form>
-</div>
-<input type="hidden" id="access_token" value="<?= $user->access_token ?>">
 
 

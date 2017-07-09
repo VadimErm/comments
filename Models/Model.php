@@ -18,6 +18,11 @@ abstract class Model
     {
         $this->_db = new Db();
     }
+
+    /**
+     * Return public properties of class
+     * @return array
+     */
     protected function attributes()
     {
         $class = new ReflectionClass($this);
@@ -31,6 +36,11 @@ abstract class Model
         return $names;
     }
 
+    /**
+     * Set properties of object
+     * @param $values
+     * @return $this
+     */
     protected function setAttributes($values)
     {
         if (is_array($values)) {
@@ -45,6 +55,11 @@ abstract class Model
         return $this;
     }
 
+    /**
+     * Create model or models from sql query result
+     * @param object|array $raws
+     * @return array
+     */
     protected function load($raws)
     {
         if(is_array($raws)){
@@ -62,6 +77,11 @@ abstract class Model
 
     }
 
+    /**
+     * Find model by id
+     * @param $id
+     * @return array|null
+     */
     public function findById($id)
     {
         $label = $this->label();
@@ -78,6 +98,11 @@ abstract class Model
 
     }
 
+    /**
+     * Find model by some condition. Exp: $model->findBy(['comment_id' => 10]).
+     * @param array $options
+     * @return array|null
+     */
     public function findBy($options = [])
     {
         if(!empty($options)){
@@ -101,6 +126,10 @@ abstract class Model
 
     }
 
+    /**
+     * Delete raw from table by id
+     * @return bool
+     */
     public function delete()
     {
         $label = $this->label();
@@ -112,6 +141,10 @@ abstract class Model
 
     }
 
+    /**
+     * Get table's raw count
+     * @return int
+     */
     public function getRawCount()
     {
         $label = $this->label();
@@ -120,6 +153,11 @@ abstract class Model
         return $query->rowCount();
     }
 
+    /**
+     * Return name of table
+     * @return string
+     *
+     */
     abstract protected  function label();
 
 

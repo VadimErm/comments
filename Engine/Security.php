@@ -19,6 +19,10 @@ class Security
 
     }
 
+    /**
+     * Authorization for ajax request and for http request
+     * @return array|bool|null
+     */
     public function auth()
     {
 

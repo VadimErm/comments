@@ -5,6 +5,10 @@ namespace App\Engine;
 
 class Router
 {
+    /**
+     * Call controller's method, for exp: indexAction
+     * @param array $params
+     */
     public static function run (array $params)
     {
         $namespace = 'App\Controller\\';
